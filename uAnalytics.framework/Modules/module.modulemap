@@ -1,0 +1,6 @@
+framework module uAnalytics {
+  umbrella header "uAnalytics.h"
+
+  export *
+  module * { export * }
+}
