@@ -10,8 +10,8 @@
 #import "uSDKConstantInfo.h"
 #import "uSDKInnerErrorMessage.h"
 
-#define USDK_VERSION @"3.2.02"
-#define USDK_BUILD_DATE @"2016072917"
+#define USDK_VERSION @"3.3.01"
+#define USDK_BUILD_DATE @"2016102515"
 
 /**
  *  uSDK启动状态标识

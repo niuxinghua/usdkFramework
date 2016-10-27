@@ -9,7 +9,7 @@
 #ifndef UAVersion_h
 #define UAVersion_h
 
-#define UANALYTICS_VERSION @"3.0.01"
-#define UANALYTICS_RELEASETIME  @"2016052015"
+#define UANALYTICS_VERSION @"3.0.02"
+#define UANALYTICS_RELEASETIME  @"2016092815"
 
 #endif /* UAVersion_h */

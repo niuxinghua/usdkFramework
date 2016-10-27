@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/UAVersion.h</key>
 		<data>
-		5xHZxNT+K4C3vSN5Z0roCMn9d9I=
+		o+q2J0nu/SyHOdB3LG/eESuYkGw=
 		</data>
 		<key>Headers/uAnalytics.h</key>
 		<data>
@@ -14,7 +14,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		Yzqonp7dki31zppcqzN+xRwBEsE=
+		plSXU1T/Hkw6UpU4yKqfMvTb5ZY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -31,11 +31,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			5xHZxNT+K4C3vSN5Z0roCMn9d9I=
+			o+q2J0nu/SyHOdB3LG/eESuYkGw=
 			</data>
 			<key>hash2</key>
 			<data>
-			7LG+v1efpI0kOW9Tk3ekXbQTvvVqbBgLsx2SVtb34UM=
+			SwW6mMRBgtAoaR9uoIrbVgH9va9OV2IvTkV/pWKY3CQ=
 			</data>
 		</dict>
 		<key>Headers/uAnalytics.h</key>

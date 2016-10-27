@@ -225,6 +225,26 @@ typedef NS_ENUM(NSInteger,uSDKDeviceTypeConst)  {
      *  可穿戴设备
      */
     WEARABLE_DEVICE = 0X32,     //可穿戴设备 	32
+    /**
+     *  热泵
+     */
+    HEAT_PUMP = 0X20,
+    /**
+     *  水壶
+     */
+    KETTLE = 0X23,
+    /**
+     *  地暖设备
+     */
+    FLOOR_HEATING_DEVICE =	0X25,
+    /**
+     *  网关
+     */
+    GATEWAY = 0X30,
+    /**
+     *  机器人
+     */
+    ROBOT =	0XA1
 } ;
 
 /**
