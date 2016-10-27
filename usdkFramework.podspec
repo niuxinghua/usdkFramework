@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name                = "usdkFramework"
-s.version             = "3.3.01"
+s.version             = "3.3.02"
 s.summary             = 'usdk'
 s.license             = 'Copyright © 2012-2015 haier.com'
 s.author              = { "zhengzx" => "zhengzx@haierubic.com" }
