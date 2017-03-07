@@ -8,67 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import "uSDKConstantInfo.h"
-#import "uSDKInnerErrorMessage.h"
 
-#define USDK_VERSION @"3.3.01"
-#define USDK_BUILD_DATE @"2016102515"
+#define USDK_VERSION @"4.1.01"
+#define USDK_BUILD_DATE @"2017022121"
 
-/**
- *  uSDK启动状态标识
- */
-typedef NS_ENUM(NSInteger, uSDKState){
-    /**
-     *  uSDK未启动
-     */
-    uSDKStateUnstart,
-    /**
-     *  uSDK启动中
-     */
-    uSDKStateStarting,
-    /**
-     *  uSDK已启动
-     */
-    uSDKStateStarted
-};
-
-/**
- *	日志级别
- */
-typedef NS_ENUM(NSInteger,uSDKLogLevelConst) {
-    /**
-     *  调试
-     */
-    USDK_LOG_DEBUG = 1,
-    /**
-     *  信息
-     */
-    USDK_LOG_INFO = 2,
-    /**
-     *  警报
-     */
-    USDK_LOG_WARNING = 4,
-    /**
-     *  错误
-     */
-    USDK_LOG_ERROR = 8,
-    /**
-     *  无
-     */
-    USDK_LOG_NONE = 10
-} ;
-
-
-@protocol uSDKManagerDelegage;
+@protocol uSDKManagerDelegate;
 
 /**
  *  uSDK管理者类，用于管理uSDK及监听uSDK消息。
  */
-@interface uSDKManager : NSObject
+@interface uSDKManager : NSObject{
+}
 
 /**
  *  代理，包括Session异常、业务消息。
  */
-@property (nonatomic, weak) id<uSDKManagerDelegage> delegate;
+@property (nonatomic, weak) id<uSDKManagerDelegate> delegate;
 
 /**
  *  uSDK版本号。
@@ -106,6 +61,14 @@ typedef NS_ENUM(NSInteger,uSDKLogLevelConst) {
  */
 + (uSDKManager*)getSingleInstance DEPRECATED_ATTRIBUTE;
 
+/**
+ *  设置下载配置文件服务器地址。本地址需要先设置成功后，才能启动uSDK。若不设置本地址直接启动uSDK，默认为国内地址，此方法为同步方法。
+ *
+ *  @param url 下载配置文件服务器的地址，参数不能为@""或nil，且必须以http或者https开头，国内地址：https://standardcfm.haierubic.com:9113，海外地址：https://wificfm.haieriot.net:56688
+ *
+ *  @return 返回设置成功或者失败
+ */
+- (uSDKErrorConst)setProfileServiceUrl:(NSString *)url;
 
 /**
  *  启动uSDK。uSDK启动后，才可以使用本SDK中的API。此方法为同步方法。
@@ -185,7 +148,7 @@ typedef NS_ENUM(NSInteger,uSDKLogLevelConst) {
 /**
  *  uSDKManager对象的代理协议，包括Session异常、业务消息。
  */
-@protocol uSDKManagerDelegage <NSObject>
+@protocol uSDKManagerDelegate <NSObject>
 
 @optional
 

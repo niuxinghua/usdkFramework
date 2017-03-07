@@ -18,6 +18,10 @@ typedef NS_ENUM(NSInteger,uSDKDeviceState) {
      */
     uSDKDeviceStateUnconnect = 0,
     /**
+     *  离线
+     */
+    uSDKDeviceStateOffline,
+    /**
      *  连接中
      */
     uSDKDeviceStateConnecting,
@@ -28,13 +32,12 @@ typedef NS_ENUM(NSInteger,uSDKDeviceState) {
     /**
      *  就绪
      */
-    uSDKDeviceStateReady,
-    /**
-     *  离线
-     */
-    uSDKDeviceStateOffline
+    uSDKDeviceStateReady
 };
 
+
+static NSString *const APP_PROT_STD = @"APP_PROT_STD";
+static NSString *const APP_PROT_SIXID = @"APP_PROT_SIXID";
 /**
  *	设备协议类型
  */
@@ -60,7 +63,7 @@ typedef NS_ENUM(NSInteger,uSDKDeviceNetTypeConst) {
     /**
      *  本地
      */
-    NET_TYPE_LOCAL,
+    NET_TYPE_LOCAL = 1
 } ;
 
 @class uSDKErrorInfo,uSDKDeviceAttribute;
@@ -71,11 +74,15 @@ typedef NS_ENUM(NSInteger,uSDKDeviceNetTypeConst) {
  */
 @interface uSDKDeviceInfo : NSObject{
     NSString* _deviceID;
+    NSString* _mac;
     NSString* _ip;
+    NSInteger _port;
     NSString* _uplusID;
     BOOL _isRemoteDeviceOnline;
     uSDKDeviceState _state;
     BOOL _isSubscribed;
+    NSInteger _security;
+    //BOOL _isBusy;
     
     NSString* _eProtocolVer;
     NSString* _smartLinkPlatform;
@@ -86,6 +93,7 @@ typedef NS_ENUM(NSInteger,uSDKDeviceNetTypeConst) {
     uSDKDeviceTypeConst _type;
     NSInteger _middleType;
     NSString* _specialId;
+    uSDKAppProtocolType _protocolType;
 }
 
 /**
@@ -98,10 +106,17 @@ typedef NS_ENUM(NSInteger,uSDKDeviceNetTypeConst) {
  */
 @property (nonatomic, copy ,readonly) NSString* deviceID;
 
+@property (nonatomic, assign ,readonly) uSDKAppProtocolType protocolType;
+
 /**
  *  设备IP；
  */
 @property (nonatomic, copy ,readonly) NSString* ip;
+
+/**
+ *  设备端口；
+ */
+@property (nonatomic, assign, readonly) NSInteger port;
 
 /**
  *  设备的类型唯一识别码，用来唯一标识设备类型；
@@ -117,6 +132,8 @@ typedef NS_ENUM(NSInteger,uSDKDeviceNetTypeConst) {
  *  设备是否已被订阅；
  */
 @property (nonatomic, assign ,readonly) BOOL isSubscribed;
+
+@property (nonatomic, assign ,readonly) NSInteger security;
 
 /**
  *  设备遵守的E++协议版本号；
@@ -168,6 +185,7 @@ typedef NS_ENUM(NSInteger,uSDKDeviceNetTypeConst) {
  */
 @property (nonatomic, assign ,readonly) uSDKDeviceNetTypeConst netType;
 
+@property (nonatomic, assign ,readonly) BOOL isRemoteDeviceOnline;
 /**
  *  APP通过解析获取到的远程家电设备json内容得到设备信息，生成远程家电设备对象。
  *
@@ -180,6 +198,17 @@ typedef NS_ENUM(NSInteger,uSDKDeviceNetTypeConst) {
 -(instancetype)initWithDeviceID:(NSString*)deviceID
                         uplusID:(NSString*)uplusID
                        isOnline:(BOOL)isRemoteDeviceOnline;
+
+/**
+ *  生成家电设备对象。
+ *
+ *  @param deviceID                 设备ID
+ *  @param uplusID                  设备类型唯一标识码
+ *
+ *  @return 返回uSDKDeviceInfo实例
+ */
+-(instancetype)initWithDeviceID:(NSString*)deviceID
+                        uplusID:(NSString*)uplusID;
 
 @end
 

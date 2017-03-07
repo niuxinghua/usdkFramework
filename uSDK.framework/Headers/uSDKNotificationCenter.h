@@ -16,7 +16,7 @@
 /**
  *	uSDK通知中心类（已废弃）
  */
-@interface uSDKNotificationCenter : NSObject<uSDKManagerDelegage,uSDKDeviceManagerDelegage, uSDKDeviceDelegate>
+@interface uSDKNotificationCenter : NSObject<uSDKManagerDelegate,uSDKDeviceManagerDelegate, uSDKDeviceDelegate>
 
 /**
  *	@brief	消息字典集合，[{Key: 消息类型, Object: 对应通知数据}, {}...] <br>

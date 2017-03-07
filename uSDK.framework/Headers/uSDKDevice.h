@@ -1,22 +1,22 @@
 //
-//  uSDKDevice.h
-//  uSDK_iOS_v2
+//  uSDKDeviceBase.h
+//  uSDKDeviceLocal
 //
-//  Created by Zono on 14-1-7.
-//  Copyright (c) 2014年 haierubic. All rights reserved.
+//  Created by liugn on 2016/10/18.
+//  Copyright © 2016年 haier. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "uSDKConstantInfo.h"
-#import "uSDKArgument.h"
 #import "uSDKDeviceInfo.h"
-#import "uSDKDeviceAttribute.h"
+#import "uSDKDeviceControlProtocol.h"
+#import "uSDKArgument.h"
+#import "uSDKDeviceProtocol.h"
 #import "uSDKDeviceAlarm.h"
 
-/**
- *  uSDK设备实体类，用于描述设备的基本信息、网络信息和网络状态，缓存当前的运行状态和报警，提供执行设备操作能力，接收属性上报。
- */
-@interface uSDKDevice : uSDKDeviceInfo{
+@class uSDKSubDevice;
+
+@interface uSDKDevice : uSDKDeviceInfo<uSDKDeviceProtocol>{
+    @public
     NSMutableDictionary* _attributeDict;
     NSMutableArray* _alarmList;
 }
@@ -36,6 +36,19 @@
  */
 @property (nonatomic, strong ,readonly) NSArray<uSDKDeviceAlarm*>* alarmList;
 
+/**
+ *  设备的子设备列表
+ */
+@property (nonatomic, strong , readonly) NSArray<uSDKSubDevice*>* subDeviceList;
+
+
+-(id<uSDKDeviceControlProtocol>)getDeviceControlAPI;//todo:remove this
+
+- (void)executeOperation:(NSString*)operationName
+                    args:(NSArray<uSDKArgument*>*)args
+              subDevices:(NSArray<uSDKSubDevice*>*)subDevices
+          requestPackage:(uSDKCommandPackage*)reqPkgData
+        deviceControlAPI:(id<uSDKDeviceControlProtocol>)deviceControlAPI;//todo:remove this
 
 /**
  *  APP通过解析获取到的远程家电设备json内容得到设备信息，生成远程家电设备对象。
@@ -49,6 +62,7 @@
  *	@return	返回家电设备实例
  */
 + (uSDKDevice*)newRemoteDeviceInstance:(NSString*)deviceMac withDeviceTypeIdentifier:(NSString*)deviceTypeIdentifier withOnline:(uSDKDeviceState)online withSmartLinkVersion:(NSString*)smartLinkVersion withSmartLinkPlatform:(NSString*)smartLinkPlatform DEPRECATED_ATTRIBUTE;
+
 
 /**
  *  连接设备，连接后会收到该设备的相关消息。需要对设备对象设置delegate，才能收到相应设备的消息。
@@ -142,14 +156,14 @@
                  success:(void(^)()) success
                  failure:(void(^)(NSError *error)) failure;
 /**
-*  执行设备命令操作，可自定义超时时间。每一种设备都有自己特定的命令集，详细的命令集描述请参看对应的设备ID文档。
-*
-*  @param operationName   要执行的设备操作命令
-*  @param args            要执行的设备操作命令列表
-*  @param timeoutInterval 超时时间（12-120秒）
-*  @param success         命令执行成功回调
-*  @param failure         命令执行失败回调
-*/
+ *  执行设备命令操作，可自定义超时时间。每一种设备都有自己特定的命令集，详细的命令集描述请参看对应的设备ID文档。
+ *
+ *  @param operationName   要执行的设备操作命令
+ *  @param args            要执行的设备操作命令列表
+ *  @param timeoutInterval 超时时间（12-120秒）
+ *  @param success         命令执行成功回调
+ *  @param failure         命令执行失败回调
+ */
 - (void)executeOperation:(NSString*)operationName
                     args:(NSArray<uSDKArgument*>*)args
          timeoutInterval:(NSTimeInterval)timeoutInterval
@@ -179,7 +193,122 @@
  */
 - (uSDKErrorInfo*)execDeviceOperation:(NSMutableArray*)cmdList withCmdSN:(int)cmdsn withGroupName:(int)groupName DEPRECATED_ATTRIBUTE;
 
+/**
+ *  根据属性名读取设备的属性值，属性值会在回调函数中返回，并更新设备对应的属性值。
+ *
+ *  @param name    属性名
+ *  @param timeoutInterval 超时时间（12-120秒）
+ *  @param success 成功，返回属性值
+ *  @param failure 失败
+ */
+-(void)readAttributeWithName:(NSString*)name
+                  subDevices:(NSArray<uSDKSubDevice*>*)subDevices
+             timeoutInterval:(NSTimeInterval)timeoutInterval
+                     success:(void(^)(NSString *value)) success
+                     failure:(void(^)(NSError *error)) failure;
+
+/**
+ *  写入设备属性值,回调中只返回是否成功,如果写入成功，设备对应的属性值会在设备属性变化上报中更新。注：此方法可用于发送单命令.
+ *
+ *  @param name    属性名
+ *  @param value   属性值
+ *  @param timeoutInterval 超时时间（12-120秒）
+ *  @param success 成功
+ *  @param failure 失败
+ */
+-(void)writeAttributeWithName:(NSString*)name
+                        value:(NSString*)value
+                   subDevices:(NSArray<uSDKSubDevice*>*)subDevices
+              timeoutInterval:(NSTimeInterval)timeoutInterval
+                      success:(void(^)()) success
+                      failure:(void(^)(NSError *error)) failure;
+
+/**
+ *  执行设备命令操作，可自定义超时时间。每一种设备都有自己特定的命令集，详细的命令集描述请参看对应的设备ID文档。
+ *
+ *  @param operationName   要执行的设备操作命令
+ *  @param args            要执行的设备操作命令列表
+ *  @param timeoutInterval 超时时间（12-120秒）
+ *  @param success         命令执行成功回调
+ *  @param failure         命令执行失败回调
+ */
+- (void)executeOperation:(NSString*)operationName
+                    args:(NSArray<uSDKArgument*>*)args
+              subDevices:(NSArray<uSDKSubDevice*>*)subDevices
+         timeoutInterval:(NSTimeInterval)timeoutInterval
+                 success:(void(^)()) success
+                 failure:(void(^)(NSError *error)) failure;
+
+
+/**
+ *  配置模块主网关域名和端口，默认超时时间为5秒。国内主网关：gw.haier.net 端口：56808  海外主网关：gw.haieriot.net 端口：56808
+ *
+ *  @param domain  主网关域名
+ *  @param port    端口号
+ *  @param success 命令执行成功回调
+ *  @param failure 命令执行失败回调
+ */
+- (void)setDeviceGatewayWithDomain:(NSString *)domain
+                              port:(NSInteger)port
+                           success:(void(^)()) success
+                           failure:(void(^)(NSError *error)) failure;
+
+/**
+ *  获取设备绑定信息
+ *
+ *  @param token 登录后云平台分配的token
+ *  @param success 成功回调
+ *  @param failure 失败回调
+ */
+- (void)getDeviceBindInfoWithToken:(NSString *)token
+                           success:(void(^)(NSString *info)) success
+                           failure:(void(^)(NSError *error)) failure;
+
+/**
+ *  获取设备绑定信息 --同步方法
+ *
+ *  @param token 登录后云平台分配的token
+ *  @param error 错误信息
+ *  @param return 设备绑定信息
+ */
+- (NSString *)getDeviceBindInfoWithToken:(NSString *)token error:(NSError**)error;
+
 @end
+
+
+/**
+ *    子设备类，包含子设备特有属性，能查看父设备，执行命令
+ */
+@interface uSDKSubDevice : uSDKDevice{
+    NSString* _subId;
+    int _subType;
+    __weak uSDKDevice* _parentDevice;
+}
+
+/**
+ *	@brief	功能描述：<br>
+ *      复杂类设备子机号；此变量只读，设置无效
+ */
+@property (nonatomic, strong,readonly) NSString* subId;
+
+/**
+ *	@brief	功能描述：<br>
+ *      复杂类设备子机类型；此变量只读，设置无效 <br>
+ *      0：所有子设备，包括室内机和室外机；1：商用空调室内机；2：商用空调室外机
+ */
+@property (nonatomic, assign,readonly) int subType;
+
+/**
+ *	@brief	功能描述：<br>
+ *      子设备所属父设备
+ */
+@property (nonatomic, weak,readonly) uSDKDevice* parentDevice;
+
+-(instancetype)initWithID:(NSString*)subId type:(int)subType parentDevice:(uSDKDevice*)parentDevice;
+
+@end
+
+
 
 /**
  *  uSDKDevice对象代理协议，用于接收回调消息（设备状态变化、属性变化、报警等）
@@ -219,5 +348,13 @@
  *  @param alarms 报警信息列表，列表中数据类型为uSDKDeviceAlarm
  */
 -(void)device:(uSDKDevice*)device didReceiveAlarms:(NSArray<uSDKDeviceAlarm*>*)alarms ;
+
+/**
+ *  子机设备列表变化
+ *
+ *  @param device           主机设备
+ *  @param subDevices       新增的子机设备列表
+ */
+-(void)device:(uSDKDevice*)device didAddSubDevices:(NSArray<uSDKSubDevice*>*)subDevices;
 
 @end

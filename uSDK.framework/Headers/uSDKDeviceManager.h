@@ -11,29 +11,8 @@
 #import "uSDKDevice.h"
 #import "uSDKDeviceConfigInfo.h"
 
-@protocol  uSDKDeviceManagerDelegage;
+@protocol  uSDKDeviceManagerDelegate;
 
-/**
- *	设备协议类型
- */
-typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
-    /**
-     *  未连接
-     */
-    uSDKCloudConnectionStateUnconnect = 0,
-    /**
-     *  连接中
-     */
-    uSDKCloudConnectionStateConnecting,
-    /**
-     *  已连接
-     */
-    uSDKCloudConnectionStateConnected,
-    /**
-     *  连接失败
-     */
-    uSDKCloudConnectionStateConnectFailed
-};
 
 /**
  *   uSDK业务错误码消息类。
@@ -52,14 +31,12 @@ typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
  */
 @interface uSDKDeviceManager : NSObject {
     uSDKCloudConnectionState _cloudConnectionState;
-    @public
-    NSMutableDictionary *_deviceDict;
 }
 
 /**
  *  关心的设备类型。用于过滤deviceManager:didAddDevices:回调和deviceManager:didRemoveDevices:回调返回的设备列表，若未设置，则返回所有类型设备
  */
-@property (nonatomic, assign) uSDKDeviceTypeConst interestedDeviceType;
+@property (nonatomic, strong) NSArray<NSNumber*> *interestedDeviceTypes;
 
 /**
  *  云连接状态
@@ -70,9 +47,9 @@ typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
  *  代理，用于接收设备列表变化、绑定、解绑、云平台连接状态消息
  *  注意:
  *  需先设置感兴趣的设备类型，若不设置则默认订阅所有类型设备
- *  见 interestedDeviceType 属性
+ *  见 interestedDeviceTypes 属性
  */
-@property (nonatomic, weak) id<uSDKDeviceManagerDelegage> delegate;
+@property (nonatomic, weak) id<uSDKDeviceManagerDelegate> delegate;
 
 /**
  *  所有已发现的设备。这些设备包括uSDK自动发现的wifi网络设备和已与用户关联的设备。如果设备既能本地访问也能远程访问，
@@ -120,19 +97,6 @@ typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
  *  @return 根据设备ID得到的设备对象
  */
 - (uSDKDevice*)getDeviceWithID:(NSString*)deviceID;
-
-/**
- *   连接云，传入远程设备相关信息。在Internet网络环境下，在有效会话期内，用户可以对设备进行远程操作，接收设备报警、状态、业务等消息。
- *
- *  @param remoteDevices      远程登录的设备列表，指与用户关联的设备，APP需要向云平台获取。获取到的设备基本信息可以通过创建uSDKDeviceInfo对象生成设备实例。
- *  @param token  远程会话token，此会话token是指用户登录云平台后获得的token
- *  @param success      命令执行成功回调
- *  @param failure      命令执行失败回调，参数为错误原因
- */
-- (void)connectToCloudWithDevices:(NSArray<uSDKDeviceInfo*>*)remoteDevices
-                            token:(NSString*)token
-                          success:(void(^)()) success
-                          failure:(void(^)(NSError *error)) failure;
 
 /**
  *   连接云，传入远程设备及云的相关信息。在Internet网络环境下，在有效会话期内，用户可以对设备进行远程操作，接收设备报警、状态、业务等消息。
@@ -208,6 +172,22 @@ typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
                                    success:(void(^)()) success
                                    failure:(void(^)(NSError *error)) failure;
 
+
+/**
+ *  Softap模式配置设备接口(可定义配置是否安全)
+ *
+ *  @param deviceConfigInfo 设备配置信息对象，该对象由getSoftapDeviceConfigInfoWithSuccess:failure:方法获得
+ *  @param security         设备配置是否为安全
+ *  @param success          成功回调
+ *  @param failure          失败回调
+ */
+- (void)configDeviceBySoftapWithConfigInfo:(uSDKDeviceConfigInfo*)deviceConfigInfo
+                                  security:(BOOL)security
+                                   success:(void(^)()) success
+                                   failure:(void(^)(NSError *error)) failure;
+
+
+
 /**
  *  SmartLink模式配置设备接口
  *
@@ -266,6 +246,28 @@ typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
                         timeoutInterval:(NSTimeInterval)timeoutInterval
                                 success:(void(^)(uSDKDevice *device)) success
                                 failure:(void(^)(NSError *error)) failure;
+
+
+/**
+ *  SmartLink模式配置设备接口(自定义超时时间和可指定deviceID和是否为安全配置)
+ *
+ *  @param ssid      接入点WIFI名称
+ *  @param password  接入点WIFI密码
+ *  @param deviceID  设备ID，目前均为设备MAC地址（MAC为无分隔符的字符串）
+ *  @param timeoutInterval 超时时间（单位是秒，范围为12秒-120秒）
+ *  @param security  配置是否为安全配置
+ *  @param success      命令执行成功回调，参数为配置成功的设备
+ *  @param failure      命令执行失败回调，参数为错误原因
+ */
+- (void)configDeviceBySmartLinkWithSSID:(NSString*)ssid
+                               password:(NSString*)password
+                               deviceID:(NSString*)deviceID
+                        timeoutInterval:(NSTimeInterval)timeoutInterval
+                               security:(BOOL)security
+                                success:(void(^)(uSDKDevice *device)) success
+                                failure:(void(^)(NSError *error)) failure;
+
+
 
 /**
  *  获取Smartlink配置错误信息。
@@ -379,7 +381,7 @@ typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
 /**
  *  uSDKDeviceManager对象的代理协议，包括设备增加、删除、绑定、解绑及云连接状态消息。
  */
-@protocol uSDKDeviceManagerDelegage <NSObject>
+@protocol uSDKDeviceManagerDelegate <NSObject>
 
 @optional
 

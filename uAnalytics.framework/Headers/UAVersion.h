@@ -10,6 +10,6 @@
 #define UAVersion_h
 
 #define UANALYTICS_VERSION @"3.0.02"
-#define UANALYTICS_RELEASETIME  @"2016092815"
+#define UANALYTICS_RELEASETIME  @"2017011911"
 
 #endif /* UAVersion_h */

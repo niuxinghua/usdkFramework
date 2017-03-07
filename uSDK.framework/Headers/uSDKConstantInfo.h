@@ -184,15 +184,6 @@ typedef NS_ENUM(NSInteger,uSDKDeviceTypeConst)  {
      *  新风设备
      */
     NEW_WIND_DEVICE = 0X24,     //新风设备	24
-    
-    /**
-     *  影音娱乐
-     */
-    VIDEO_AUDIO = 0X0F,         //影音娱乐	0F
-    /**
-     *  视频监控
-     */
-    VIDEO_MONITOR = 0X12,       //视频监控	12
     /**
      *  小厨电
      */
@@ -202,17 +193,9 @@ typedef NS_ENUM(NSInteger,uSDKDeviceTypeConst)  {
      */
     PUBLIC_SERVICE = 0X26,      //公共服务类	26
     /**
-     *  安防报警
-     */
-    SECURITY_ALARM = 0X11,      //安防报警	11
-    /**
      *  环境监测设备
      */
     ENV_MONITOR = 0X29,         //环境监测设备	29
-    /**
-     *  空气净化设备
-     */
-    AIR_PURIFY_DEVICE = 0X21,   //空气净化设备	21
     /**
      *  其他
      */
@@ -244,7 +227,19 @@ typedef NS_ENUM(NSInteger,uSDKDeviceTypeConst)  {
     /**
      *  机器人
      */
-    ROBOT =	0XA1
+    ROBOT =	0XA1,
+    /**
+     *  干衣机
+     */
+    DRYER = 49,
+    /**
+     *  浴霸及暖风机
+     */
+    AIR_HEATER = 52,
+    /**
+     *  个人护理类
+     */
+    PERSONAL_CLEANER = 54
 } ;
 
 /**
@@ -342,6 +337,51 @@ typedef  NS_ENUM(NSInteger,uSDKErrorConst) {
      */
     ERR_USDK_INVALID_GROUP_NAME = -14005,//无效的组命令名称
     
+    ERR_USDK_SUBDEVICE_DO_NOT_NEED_CONNECT = -14006,//
+    
+    //设备繁忙状态错误
+    ERR_USDK_DEVICE_IS_BUSY = -14007,
+    
+    //商空不支持控制多个子机
+    ERR_USDK_COMMERCIAL_AIRCONDITION_NOT_SUPPORT = -14008,
+    
+    /**
+     *  设备不是本地设备(只有本地设备才能设置主网关域名)
+     */
+    ERR_USDK_DEVICE_NOT_LOCAL = -14009,//设备不是本地设备
+    
+    /**
+     *  请先调用connectToCloud接口
+     */
+    ERR_USDK_CALL_CONNECT_TO_CLOUD_INTERFACE_FIRST = -14010,
+    /**
+     *  安全设备无token
+     */
+    ERR_USDK_SECURITY_DEVICE_WITHOUT_TOKEN = -14011,
+    /**
+     *  SERVER远程模块未初始化
+     */
+    ERR_USDK_SERVER_REMOTE_MODULE_NOT_INIT = -14012,
+    /**
+     *  SERVER本地模块未初始化
+     */
+    ERR_USDK_SERVER_LOCAL_MODULE_NOT_INIT = -14013,
+    /**
+     *  离线宣告导致离线
+     */
+    ERR_USDK_OFFLINE_CALL = -14014,
+    /**
+     *  子机消息上报超时，置为离线
+     */
+    ERR_USDK_SUBDEVICE_REPORT_MSG_TIMEOUT_SET_OFFLINE = -14015,
+    /**
+     *  远程设备无法获取bind info
+     */
+    ERR_USDK_REMOTE_DEVICE_CAN_NOT_GET_BIND_INFO = -14016,
+    /**
+     *  设备离线
+     */
+    ERR_USDK_DEVICE_IS_OFFLINE = -14017,
 } ;
 
 /**
@@ -373,5 +413,69 @@ typedef NS_ENUM(NSInteger,uSDKDeviceConfigModeConst) {
 } ;
 
 
+/**
+ *	云连接状态
+ */
+typedef NS_ENUM(NSInteger,uSDKCloudConnectionState) {
+    /**
+     *  未连接
+     */
+    uSDKCloudConnectionStateUnconnect = 0,
+    /**
+     *  连接中
+     */
+    uSDKCloudConnectionStateConnecting,
+    /**
+     *  已连接
+     */
+    uSDKCloudConnectionStateConnected,
+    /**
+     *  连接失败
+     */
+    uSDKCloudConnectionStateConnectFailed
+};
+
+/**
+ *	日志级别
+ */
+typedef NS_ENUM(NSInteger,uSDKLogLevelConst) {
+    /**
+     *  调试
+     */
+    USDK_LOG_DEBUG = 1,
+    /**
+     *  信息
+     */
+    USDK_LOG_INFO = 2,
+    /**
+     *  警报
+     */
+    USDK_LOG_WARNING = 4,
+    /**
+     *  错误
+     */
+    USDK_LOG_ERROR = 8,
+    /**
+     *  无
+     */
+    USDK_LOG_NONE = 10
+} ;
 
 
+/**
+ *  uSDK启动状态标识
+ */
+typedef NS_ENUM(NSInteger, uSDKState){
+    /**
+     *  uSDK未启动
+     */
+    uSDKStateUnstart,
+    /**
+     *  uSDK启动中
+     */
+    uSDKStateStarting,
+    /**
+     *  uSDK已启动
+     */
+    uSDKStateStarted
+};

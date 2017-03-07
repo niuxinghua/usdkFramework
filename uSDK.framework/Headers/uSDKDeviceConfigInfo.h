@@ -101,7 +101,7 @@
 
 /**
  *	@brief	功能描述：<br>
- *      uSDK设备配置信息中的AP信息类，用于描述路由信息，包括ap加密方式、ap信号强度、ap的ssid名称。<br>
+ *      uSDK设备配置信息中的AP信息类，用于描 述路由信息，包括ap加密方式、ap信号强度、ap的ssid名称。<br>
  *      当获取设备softap配置信息时，在设备返回的当前能够搜索到的ap列表中，存放的就是AP信息类实例。
  */
 @interface uSDKDeviceConfigInfoAp : NSObject
